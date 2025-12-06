@@ -1,0 +1,9 @@
+name: my_org_workspace
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  # none - workspace root usually has no runtime deps
+
+dev_dependencies:
+  melos: ^7.0.0  # lock to a tested major version for team consistency

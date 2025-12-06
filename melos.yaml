@@ -1,0 +1,15 @@
+name: ragbot-frontend
+
+packages:
+  - "packages/*"
+  - "apps/*"
+
+scripts:
+  bootstrap:
+    run: melos exec -- "flutter pub get || dart pub get"
+
+  run-backend:
+    run: uvicorn apps.backend_api.main:app --reload
+
+  run-app:
+    run: melos exec --filter=package:flutter_app -- "flutter run"
