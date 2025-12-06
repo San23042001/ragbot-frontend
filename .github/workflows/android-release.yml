@@ -1,0 +1,50 @@
+name: Android Release Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install Melos
+        run: |
+          dart pub global activate melos
+          melos bootstrap
+
+      - name: Install Ruby + Fastlane
+        run: sudo gem install fastlane
+
+      - name: Decode Keystore
+        run: echo "$ANDROID_KEYSTORE" | base64 -d > /tmp/keystore.jks
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+
+      - name: Save Play Store JSON
+        run: echo "${{ secrets.SERVICE_ACCOUNT_JSON }}" > /tmp/service_account.json
+
+      - name: Flutter Pub Get
+        working-directory: apps/ragbot
+        run: flutter pub get
+
+      - name: Build & Upload (Fastlane)
+        working-directory: apps/ragbot/android
+        run: fastlane release
+        env:
+          KEYSTORE_PATH: /tmp/keystore.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          SUPPLY_JSON_KEY: /tmp/service_account.json
