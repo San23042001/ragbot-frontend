@@ -7,7 +7,7 @@ RagBot is a Flutter chat application integrated with a FastAPI backend that leve
 ## 🗂️ Project Structure
 
 ```
-repo_root/
+ragbot-frontend/
  ├── apps/
  │    └── ragbot/       # Main Flutter app
  ├── packages/
